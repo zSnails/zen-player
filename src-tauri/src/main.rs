@@ -3,7 +3,7 @@ extern crate sqlite;
 #[doc(hidden)]
 
 use serde::Serialize;
-
+use home::home_dir;
 use std::marker::Sync;
 // #![cfg_attr(
 // //   all(not(debug_assertions), target_os = "windows"),
@@ -42,7 +42,12 @@ fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
 
 
 fn main() {
-  let connection = sqlite::open("/home/tholly/data.zen").unwrap();
+  let mut path = String::from("");
+  match home_dir() {
+    Some(home_path) => path.push_str(home_path.to_str().unwrap()),
+    None => println!("Yesn't"),
+  }
+  let connection = sqlite::open(format!("{}/data.zen", path)).unwrap();
   match connection.execute("CREATE TABLE playlists (id INTEGER PRIMARY KEY, name TEXT, description TEXT, cover TEXT)") {
     Ok(_) => println!("Created playlists table"),
     Err(_) => eprintln!("Table already exists, ignoring")
