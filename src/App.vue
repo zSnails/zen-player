@@ -2,16 +2,31 @@
 <main class="main-area">
     <router-view></router-view>
     <section class="cover-art">
-        <div ref="coverImage" id="coverImage" :style="{ 'background': currentCover }" class="cover-image"></div>
+        <div ref="coverImage" id="coverImage" :style="currentCover" class="cover-image"></div>
         <h2 class="playlist-current"></h2>
     </section>
 </main>
-<div class="progress-bar">
-</div>
+<ProgressBar max="120" progress="60"/>
 </template>
 <script>
+
+import ProgressBar from "./components/ProgressBar";
+import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { store } from './store.js';
+
 export default {
   name: 'App',
+  components: {
+    ProgressBar,
+  },
+  computed: {
+    currentCover() {
+        console.log("niggers")
+        return {
+            'background-image': `linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url(${convertFileSrc(store.cover)})`,
+        };
+    }
+  }
 }
 </script>
 
@@ -28,10 +43,9 @@ export default {
     user-select: none; 
 }
 
-@media screen and (max-width: 50vh) {
-    .main-area {
-        flex-direction: column;
-        min-height: 0;
+@media screen and (max-width: 1030px) {
+    .cover-image {
+        display: none;
     }
 }
 
@@ -63,16 +77,13 @@ body {
     min-height: 50vh;
 }
 
-.progress-bar {
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 10px;
-    width: 20%;
-    background-color: #FFF;
+.cover-image {
+    transition: 200ms;
+    background-size: cover;
+    background-position: center center;
+    width: 100vh;
+    height: 100vh;
 }
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }

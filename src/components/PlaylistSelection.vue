@@ -18,7 +18,7 @@
     <section class="playlist-section">
         <button class="btn" @click="createPlaylistModal()">+ New playlist</button>
         <ul class="playlist-list">
-            <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.id" v-on:click="selectPlaylist(playlist)">
+            <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.id" @click="selectPlaylist(playlist)">
                 <router-link class="playlist-name" :to="`/${playlist.name}`">{{ playlist.name }}</router-link>
                 <p class="playlist-description">{{ playlist.description }}</p>
             </li>
@@ -27,7 +27,10 @@
 </template>
 
 <script>
-import { convertFileSrc, invoke } from '@tauri-apps/api/tauri';
+import { /*convertFileSrc,*/ invoke } from '@tauri-apps/api/tauri';
+import { listen } from '@tauri-apps/api/event';
+import { store } from '../store.js';
+
 
 export default {
     name: 'PlaylistSelection',
@@ -35,16 +38,18 @@ export default {
         return {
             newPlaylistName: "",
             newPlaylistDescription: "",
-            currentCover: '',
             playlists: []
         }
     },
     async beforeMount() {
         this.playlists = await invoke('get_playlists');
+        listen('backend:playlist-create', event => {
+            this.playlists.push(event.payload);
+        });
     },
     methods: {
         selectPlaylist(playlist) {
-            document.getElementById('coverImage').style['background-image'] = `linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url(${convertFileSrc(playlist.cover)})`
+            store.cover = playlist.cover;
         },
         cancelPlaylistCreation() {
             this.$refs["modal"].style.display = "none";
@@ -54,8 +59,10 @@ export default {
         createPlaylistModal() {
             this.$refs["modal"].style.display = "block";
         },
-        submitNewPlaylist() {
-            invoke('create_playlist', {name: this.newPlaylistName, description: this.newPlaylistDescription, cover:"sexo"});
+        async submitNewPlaylist() {
+            // TODO: get an actual image from the users pc
+            await invoke('create_playlist', {name: this.newPlaylistName, description: this.newPlaylistDescription, cover:"sexo"});
+            this.cancelPlaylistCreation();
         }
     }
 }
@@ -215,12 +222,4 @@ export default {
     color: var(--foreground-secondary);
 }
 
-.cover-image {
-    transition: 200ms;
-    /* background: linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url('/home/tholly/pictures/taotao.png'); */
-    background-size: cover;
-    background-position: center center;
-    width: 100vh;
-    height: 100vh;
-}
 </style>
