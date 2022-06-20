@@ -2,9 +2,10 @@ extern crate sqlite;
 // #[macro_use] extern crate serde_derive;
 #[doc(hidden)]
 
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use home::home_dir;
 use std::marker::Sync;
+use std::fs;
 // #![cfg_attr(
 // //   all(not(debug_assertions), target_os = "windows"),
 //   windows_subsystem = "windows"
@@ -27,6 +28,19 @@ impl Playlist {
     }
 }
 
+#[derive(Serialize, Deserialize)]
+struct Colors {
+    background: String,
+    foreground: String,
+    secondary_foreground: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Theme {
+    name: String,
+    cover: String,
+    colors: Colors,
+}
 
 #[tauri::command]
 fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
@@ -42,11 +56,30 @@ fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
 
 #[tauri::command]
 fn create_playlist(name: String, description: String, cover: String, database: tauri::State<'_, Database>){
-    println!("{}", format!("INSERT INTO playlists (name, description, cover) values ({}, {}, {})", name, description, cover));
     match database.0.execute(format!("INSERT INTO playlists (name, description, cover) values ('{}', '{}', '{}')", name, description, cover)) {
-        Ok(_) => println!("tudo bem"),
-        Err(e) => eprintln!("não não {}", e),
+        Ok(_) => println!("Done"),
+        Err(e) => eprintln!("Error: {}", e),
     };
+}
+
+#[tauri::command]
+fn get_themes() -> Vec<Theme> { //-> Vec<Theme> {
+  let mut dir_path = String::from("");
+  match home_dir() {
+    Some(home_path) => dir_path.push_str(home_path.to_str().unwrap()),
+    None => println!("Error!"),
+  }
+  dir_path = format!("{}/.config/zen-player/themes/", &dir_path);
+  let paths = fs::read_dir(dir_path).unwrap();
+  let mut themes: Vec<Theme> = Vec::with_capacity(5);
+  for path in paths {
+    println!("{}", path.as_ref().unwrap().path().display());
+    let text = std::fs::read_to_string(format!("{}", path.unwrap().path().display())).unwrap(); 
+    let theme: Theme = serde_json::from_str(&text).unwrap();
+    themes.push(theme);
+  }
+  
+  return themes;
 }
 
 fn main() {
@@ -67,7 +100,7 @@ fn main() {
   }
   tauri::Builder::default()
     .manage(Database(connection))
-    .invoke_handler(tauri::generate_handler![get_playlists, create_playlist])
+    .invoke_handler(tauri::generate_handler![get_playlists, create_playlist, get_themes])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
