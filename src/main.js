@@ -1,12 +1,12 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import App from './App.vue'
-//import PlaylistView from "./components/PlaylistSelection";
+import PlaylistView from "./components/PlaylistSelection";
 import ThemeView from "./components/ThemeSelection"
 
 const routes = [
     { path: '/', component: ThemeView },
-    // { path: '/:playlistName', component: PlaylistContent },
+    { path: '/pl', component: PlaylistView },
 ];
 
 

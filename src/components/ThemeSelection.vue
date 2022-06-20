@@ -9,41 +9,26 @@
 </template>
 
 <script>
-import { convertFileSrc, invoke } from '@tauri-apps/api/tauri';
-
+import { /*convertFileSrc,*/ invoke } from '@tauri-apps/api/tauri';
+import { store } from "../store.js";
 export default {
     name: 'ThemeSelection',
     data() {
         return {
-            currentCover: '',
-            themes: [
-                {name: 'dark', cover: '/home/johan/Projects/tauri/zen-player/src/assets/zen-player-dark-logo.png'},
-            ]
+            themes: []
         }
     },
     async beforeMount() {
         this.themes = await invoke('get_themes');
-        console.log(this.themes);
     },
     methods: {
         selectTheme(theme) {
-            document.getElementById('coverImage').style['background-image'] = `linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url(${convertFileSrc(theme.cover)})`
+            store.cover = theme.cover;
         }
-        //changeTheme(themeName) {
-        // TODO: change theme colors
-        //}
     }
 }
 </script>
 <style>
-@media screen and (max-width: 800px) {
-    .theme-section {
-        display: none;
-    } 
-    .theme-list {
-        padding: 0;
-    }
-}
 
 .theme-section {
     display: flex;
@@ -90,13 +75,5 @@ export default {
     font-weight: 600;
     font-size: 25px;
     text-decoration: none;
-}
-
-.cover-image {
-    transition: 200ms;
-    background-size: cover;
-    background-position: center center;
-    width: 100vh;
-    height: 100vh;
 }
 </style>

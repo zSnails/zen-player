@@ -19,7 +19,7 @@
         <button class="btn" @click="createPlaylistModal()">+ New playlist</button>
         <ul class="playlist-list">
             <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.id" @click="selectPlaylist(playlist)">
-                <router-link class="playlist-name" :to="`/${playlist.name}`">{{ playlist.name }}</router-link>
+                <router-link class="playlist-name" :to="`/${playlist.id}`">{{ playlist.name }}</router-link>
                 <p class="playlist-description">{{ playlist.description }}</p>
             </li>
         </ul>

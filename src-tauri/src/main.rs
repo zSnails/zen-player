@@ -62,43 +62,42 @@ fn create_playlist(name: String, description: String, cover: String, database: t
 
 #[tauri::command]
 fn get_themes() -> Vec<Theme> { //-> Vec<Theme> {
-  let mut dir_path = String::from("");
-  match home_dir() {
-    Some(home_path) => dir_path.push_str(home_path.to_str().unwrap()),
-    None => println!("Error!"),
-  }
-  dir_path = format!("{}/.config/zen-player/themes/", &dir_path);
-  let paths = fs::read_dir(dir_path).unwrap();
-  let mut themes: Vec<Theme> = Vec::with_capacity(5);
-  for path in paths {
-    println!("{}", path.as_ref().unwrap().path().display());
-    let text = std::fs::read_to_string(format!("{}", path.unwrap().path().display())).unwrap(); 
-    let theme: Theme = serde_json::from_str(&text).unwrap();
-    themes.push(theme);
-  }
+    let mut dir_path = String::from("");
+    match home_dir() {
+        Some(home_path) => dir_path.push_str(home_path.to_str().unwrap()),
+        None => todo!(),
+    }
+    dir_path = format!("{}/.config/zen-player/themes/", &dir_path);
+    let paths = fs::read_dir(dir_path).unwrap();
+    let mut themes: Vec<Theme> = Vec::with_capacity(5);
+    for path in paths {
+        let text = std::fs::read_to_string(format!("{}", path.unwrap().path().display())).unwrap(); 
+        let theme: Theme = serde_json::from_str(&text).unwrap();
+        themes.push(theme);
+    }
   
-  return themes;
+    return themes;
 }
 
 fn main() {
-  let mut path = String::from("");
-  match home_dir() {
-    Some(home_path) => path.push_str(home_path.to_str().unwrap()),
-    None => println!("Yesn't"),
-  }
-  let connection = sqlite::open(format!("{}/data.zen", path)).unwrap();
-  match connection.execute("CREATE TABLE playlists (id INTEGER PRIMARY KEY, name TEXT, description TEXT, cover TEXT)") {
-    Ok(_) => println!("Created playlists table"),
-    Err(_) => eprintln!("Table already exists, ignoring")
-  }
+    let mut path = String::from("");
+    match home_dir() {
+        Some(home_path) => path.push_str(home_path.to_str().unwrap()),
+        None => todo!(),
+    }
+    let connection = sqlite::open(format!("{}/data.zen", path)).unwrap();
+    match connection.execute("CREATE TABLE playlists (id INTEGER PRIMARY KEY, name TEXT, description TEXT, cover TEXT)") {
+        Ok(_) => println!("Created playlists table"),
+        Err(_) => eprintln!("Table already exists, ignoring")
+    }
 
-  match connection.execute("CREATE TABLE songs (id INTEGER PRIMARY KEY, playlist_id INTEGER, name TEXT, cover TEXT, FOREIGN KEY (playlist_id) REFERENCES playlists(id))") {
-    Ok(_) => println!("Created songs table"),
-    Err(_) => eprintln!("Songs table already exists, ignoring")
-  }
-  tauri::Builder::default()
-    .manage(Database(connection))
-    .invoke_handler(tauri::generate_handler![get_playlists, create_playlist, get_themes])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    match connection.execute("CREATE TABLE songs (id INTEGER PRIMARY KEY, playlist_id INTEGER, name TEXT, cover TEXT, FOREIGN KEY (playlist_id) REFERENCES playlists(id))") {
+        Ok(_) => println!("Created songs table"),
+        Err(_) => eprintln!("Songs table already exists, ignoring")
+    }
+    tauri::Builder::default()
+        .manage(Database(connection))
+        .invoke_handler(tauri::generate_handler![get_playlists, create_playlist, get_themes])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
