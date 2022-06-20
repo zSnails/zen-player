@@ -1,5 +1,6 @@
 <template>
     <section class="playlist-section">
+        <button class="playlist-new">+ New playlist</button>
         <ul class="playlist-list">
             <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.name" v-on:click="selectPlaylist(playlist)">
                 <h2 class="playlist-name">{{ playlist.name }}</h2>
@@ -40,7 +41,7 @@ export default {
 }
 </script>
 <style>
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 800px) {
     .cover-art {
         display: none;
     }
@@ -51,9 +52,15 @@ export default {
         padding: 0;
     }
 }
+.playlist-new {
+    width: 10.0rem;
+    background: transparent;
+    border: none;
+    color: var(--foreground);
+}
 .playlist-section {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: 50vw;
     margin: 40px;
     min-width: 50vh;
@@ -63,6 +70,7 @@ export default {
     list-style-type: none;
     max-height: 75vh;
     overflow-x: hidden;
+    padding: 0;
 }
 
 

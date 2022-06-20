@@ -30,6 +30,13 @@ export default {
     user-select: none; 
 }
 
+@media screen and (max-width: 50vh) {
+    .main-area {
+        flex-direction: column;
+        min-height: 0;
+    }
+}
+
 ::-webkit-scrollbar-track {
     background: rgba(0 0 0 0);
 }

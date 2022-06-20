@@ -40,6 +40,10 @@ fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
     playlists
 }
 
+#[tauri::command]
+fn create_playlist(name: String, description: String, cover: String, database: tauri::State<'_, Database>){
+    database.0.execute(format!("INSERT INTO playlists (name, description, cover) values ({}, {}, {})", name, description, cover)).unwrap();
+}
 
 fn main() {
   let mut path = String::from("");
