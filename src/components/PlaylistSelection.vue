@@ -15,12 +15,12 @@
             </div>
         </div>
     </section>
-    <section class="playlist-section">
+    <section class="left-section">
         <button class="btn" @click="createPlaylistModal()">+ New playlist</button>
-        <ul class="playlist-list">
-            <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.id" @click="selectPlaylist(playlist)">
-                <router-link class="playlist-name" :to="`/${playlist.id}`">{{ playlist.name }}</router-link>
-                <p class="playlist-description">{{ playlist.description }}</p>
+        <ul class="left-list">
+            <li class="left-info" v-for="playlist in playlists" ref="li" :key="playlist.id" @click="selectPlaylist(playlist)">
+                <router-link class="left-name" :to="`/playlist/${playlist.id}/music`">{{ playlist.name }}</router-link>
+                <p class="left-description">{{ playlist.description }}</p>
             </li>
         </ul>
     </section>
@@ -68,158 +68,21 @@ export default {
 }
 </script>
 <style>
-@media screen and (max-width: 800px) {
-    .cover-art {
-        display: none;
-    }
-    .playlist-section {
-        margin: 0;
-    }
-    .playlist-list {
-        padding: 0;
-    }
-}
-
-.form-control {
-    background-color: var(--foreground);
-    color: var(--background);
-    margin-left: 5px;
-    padding: 4px;
-    border-radius: 50px;
-    outline: none;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: none;
-    background-color: rgba(0,0,0, 0.5);
-}
-
-.modal-content {
-    background-color: var(--background);
-    display: flex;
-    flex-direction: column;
-    min-height: 3rem;
-    margin: 40vh auto;
-    padding: 20px;
-    border-radius: 15px;
-    width: 35%;
-}
-
-.form-element {
-    margin: 10px;
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    flex-grow: 1;
-    text-align: center;
-}
-
-.form-element .form-control {
-    width: 100%;
-}
-
-.form-element .form-label {
-    width: 25%;
-}
-
-.form-element textarea {
-    resize: none;
-    overflow: none;
-    border-radius: 5px;
-    max-height: 3;
-}
-
-.normal-heading {
-    color: var(--foreground);
-    font-size: 20px;
-}
-
-.normal-text {
-    color: var(--foreground);
-    font-size: 16px;
-}
-
-.btn.btn-cancel {
-    color: #ff5b5b !important;
-}
-
-.btn {
-    width: 10.0rem;
-    background: transparent;
-    border: none;
-    color: var(--foreground);
-}
-
-.button-row {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.button-row .btn {
-    width: 100%;
-}
-
-.playlist-section {
-    display: flex;
-    flex-direction: column;
-    width: 50vw;
-    margin: 40px;
-    min-width: 50vh;
-}
-
-.playlist-list {
-    list-style-type: none;
-    max-height: 75vh;
-    overflow-x: hidden;
-    padding: 0;
-}
 
 
-.playlist-list::-webkit-scrollbar-track {
-    background: rgba(0 0 0 0);
-}
 
-.playlist-list::-webkit-scrollbar {
-    width: 1vw;
-}
+/* .playlist-list::-webkit-scrollbar-track { */
+/*     background: rgba(0 0 0 0); */
+/* } */
 
-.playlist-list::-webkit-scrollbar-thumb {
-    background: #FBFBFB;
-    border-radius: 50px;
-}
+/* .playlist-list::-webkit-scrollbar { */
+/*     width: 1vw; */
+/* } */
 
-.playlist-info {
-    margin: 20px;
-}
+/* .playlist-list::-webkit-scrollbar-thumb { */
+/*     background: #FBFBFB; */
+/*     border-radius: 50px; */
+/* } */
 
-.playlist-info:hover .playlist-description {
-    cursor: default;
-}
-
-.playlist-info:hover .playlist-name {
-    text-decoration: underline;
-    text-decoration-color: var(--selected-color);
-    text-decoration-thickness: 3px;
-    cursor: default;
-}
-.playlist-name {
-    color: var(--foreground);
-    margin-bottom: 5px;
-    font-weight: 600;
-    font-size: 25px;
-    text-decoration: none;
-}
-
-.playlist-description {
-    color: var(--foreground-secondary);
-}
 
 </style>
