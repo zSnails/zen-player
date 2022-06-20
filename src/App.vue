@@ -1,20 +1,17 @@
 <template>
 <main class="main-area">
-    <PlaylistSelection/>
+    <router-view></router-view>
+    <section class="cover-art">
+        <div ref="coverImage" id="coverImage" :style="{ 'background': currentCover }" class="cover-image"></div>
+        <h2 class="playlist-current"></h2>
+    </section>
 </main>
 <div class="progress-bar">
 </div>
 </template>
-
 <script>
-
-import PlaylistSelection from './components/PlaylistSelection';
-
 export default {
   name: 'App',
-  components: {
-    PlaylistSelection,
-  }
 }
 </script>
 
@@ -23,6 +20,7 @@ export default {
 :root {
     --scrollbar-color: #FBFBFB;
     --selected-color: #FBFBFB;
+    --background: #14141A;
     --foreground: #FBFBFB;
     --foreground-secondary: #BDBDBD;
     -webkit-user-select: none; 
@@ -52,7 +50,7 @@ export default {
 body {
     margin: 0;
     padding: 0;
-    background: #14141A;
+    background: var(--background);
     overflow-y: hidden;
     overflow-x: hidden;
 }
