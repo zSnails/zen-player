@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     currentCover() {
-        console.log("niggers")
+        console.log("niggers");
         return {
             'background-image': `linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url(${convertFileSrc(store.cover)})`,
         };

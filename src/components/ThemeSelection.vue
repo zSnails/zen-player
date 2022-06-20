@@ -23,6 +23,15 @@ export default {
     methods: {
         selectTheme(theme) {
             store.cover = theme.cover;
+            this.changeTheme(theme);
+        },
+        changeTheme(theme) {
+            console.log("changeTheme")
+            document.body.style.setProperty("--background", theme.colors.background);
+            document.body.style.setProperty("--foreground", theme.colors.foreground);
+            document.body.style.setProperty("--foreground-secondary", theme.colors.secondary_foreground);
+            document.body.style.setProperty("--selected-color", theme.colors.foreground);
+            document.body.style.setProperty("--scrollbar-color", theme.colors.foreground);
         }
     }
 }

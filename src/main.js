@@ -6,9 +6,9 @@ import ThemeView from "./components/ThemeSelection";
 import MusicView from "./components/MusicView";
 
 const routes = [
-    { path: '/', component: PlaylistView },
+    { path: '/playlist', component: PlaylistView },
     { path: '/playlist/:id/music', component: MusicView },
-    { path: '/themes', component: ThemeView },
+    { path: '/', component: ThemeView },
 ];
 
 
