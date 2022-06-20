@@ -42,7 +42,11 @@ fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
 
 #[tauri::command]
 fn create_playlist(name: String, description: String, cover: String, database: tauri::State<'_, Database>){
-    database.0.execute(format!("INSERT INTO playlists (name, description, cover) values ({}, {}, {})", name, description, cover)).unwrap();
+    println!("{}", format!("INSERT INTO playlists (name, description, cover) values ({}, {}, {})", name, description, cover));
+    match database.0.execute(format!("INSERT INTO playlists (name, description, cover) values ('{}', '{}', '{}')", name, description, cover)) {
+        Ok(_) => println!("tudo bem"),
+        Err(e) => eprintln!("não não {}", e),
+    };
 }
 
 fn main() {
@@ -63,7 +67,7 @@ fn main() {
   }
   tauri::Builder::default()
     .manage(Database(connection))
-    .invoke_handler(tauri::generate_handler![get_playlists])
+    .invoke_handler(tauri::generate_handler![get_playlists, create_playlist])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

@@ -1,16 +1,28 @@
 <template>
+    <section ref="modal" class="modal">
+        <div class="modal-content">
+            <div class="form-element">
+                <label class="form-label normal-heading">Name</label>
+                <input class="form-control" name="new-playlist-name" v-model="newPlaylistName" required>
+            </div>
+            <div class="form-element">
+                <label class="form-label normal-heading">Description</label>
+                <textarea rows="3" class="form-control" name="new-playlist-name" v-model="newPlaylistDescription" required></textarea>
+            </div>
+            <div class="button-row">
+                <button class="btn btn-submit" @click="submitNewPlaylist()">Done</button>
+                <button class="btn btn-cancel" @click="cancelPlaylistCreation()">Cancel</button>
+            </div>
+        </div>
+    </section>
     <section class="playlist-section">
-        <button class="playlist-new">+ New playlist</button>
+        <button class="btn" @click="createPlaylistModal()">+ New playlist</button>
         <ul class="playlist-list">
-            <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.name" v-on:click="selectPlaylist(playlist)">
-                <h2 class="playlist-name">{{ playlist.name }}</h2>
+            <li class="playlist-info" v-for="playlist in playlists" ref="li" :key="playlist.id" v-on:click="selectPlaylist(playlist)">
+                <router-link class="playlist-name" :to="`/${playlist.name}`">{{ playlist.name }}</router-link>
                 <p class="playlist-description">{{ playlist.description }}</p>
             </li>
         </ul>
-    </section>
-    <section class="cover-art">
-        <div ref="coverImage" id="coverImage" :style="{ 'background': currentCover }" class="cover-image"></div>
-        <h2 class="playlist-current"></h2>
     </section>
 </template>
 
@@ -21,21 +33,29 @@ export default {
     name: 'PlaylistSelection',
     data() {
         return {
+            newPlaylistName: "",
+            newPlaylistDescription: "",
             currentCover: '',
-            playlists: [
-                {name: 'Troncha', description: 'Tortillon', cover: '/home/tholly/pictures/taotao.png'},
-            ]
+            playlists: []
         }
     },
     async beforeMount() {
-        console.debug('loading playlists');
         this.playlists = await invoke('get_playlists');
-        console.log(this.playlists)
     },
     methods: {
         selectPlaylist(playlist) {
             document.getElementById('coverImage').style['background-image'] = `linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url(${convertFileSrc(playlist.cover)})`
-            /* this.currentCover =     /1* background: linear-gradient(90deg, #141419 0%, rgba(255, 255, 255, 0) 100%), url('/home/tholly/pictures/taotao.png'); */
+        },
+        cancelPlaylistCreation() {
+            this.$refs["modal"].style.display = "none";
+            this.newPlaylistDescription = "";
+            this.newPlaylistName = "";
+        },
+        createPlaylistModal() {
+            this.$refs["modal"].style.display = "block";
+        },
+        submitNewPlaylist() {
+            invoke('create_playlist', {name: this.newPlaylistName, description: this.newPlaylistDescription, cover:"sexo"});
         }
     }
 }
@@ -52,12 +72,94 @@ export default {
         padding: 0;
     }
 }
-.playlist-new {
+
+.form-control {
+    background-color: var(--foreground);
+    color: var(--background);
+    margin-left: 5px;
+    padding: 4px;
+    border-radius: 50px;
+    outline: none;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: none;
+    background-color: rgba(0,0,0, 0.5);
+}
+
+.modal-content {
+    background-color: var(--background);
+    display: flex;
+    flex-direction: column;
+    min-height: 3rem;
+    margin: 40vh auto;
+    padding: 20px;
+    border-radius: 15px;
+    width: 35%;
+}
+
+.form-element {
+    margin: 10px;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.form-element .form-control {
+    width: 100%;
+}
+
+.form-element .form-label {
+    width: 25%;
+}
+
+.form-element textarea {
+    resize: none;
+    overflow: none;
+    border-radius: 5px;
+    max-height: 3;
+}
+
+.normal-heading {
+    color: var(--foreground);
+    font-size: 20px;
+}
+
+.normal-text {
+    color: var(--foreground);
+    font-size: 16px;
+}
+
+.btn.btn-cancel {
+    color: #ff5b5b !important;
+}
+
+.btn {
     width: 10.0rem;
     background: transparent;
     border: none;
     color: var(--foreground);
 }
+
+.button-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.button-row .btn {
+    width: 100%;
+}
+
 .playlist-section {
     display: flex;
     flex-direction: column;
@@ -104,6 +206,9 @@ export default {
 .playlist-name {
     color: var(--foreground);
     margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 25px;
+    text-decoration: none;
 }
 
 .playlist-description {
