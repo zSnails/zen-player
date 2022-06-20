@@ -40,6 +40,17 @@ export default {
 }
 </script>
 <style>
+@media screen and (max-width: 500px) {
+    .cover-art {
+        display: none;
+    }
+    .playlist-section {
+        margin: 0;
+    }
+    .playlist-list {
+        padding: 0;
+    }
+}
 .playlist-section {
     display: flex;
     flex-direction: row;
@@ -70,23 +81,16 @@ export default {
 
 .playlist-info {
     margin: 20px;
-    transition: 500ms;
-}
-
-
-.playlist-info:hover {
-    width: 2rem;
-    height: 1.3rem;
 }
 
 .playlist-info:hover .playlist-description {
-    text-decoration: underline;
-    text-decoration-color: var(--selected-color);
-    text-decoration-thickness: 3px;
     cursor: default;
 }
 
 .playlist-info:hover .playlist-name {
+    text-decoration: underline;
+    text-decoration-color: var(--selected-color);
+    text-decoration-thickness: 3px;
     cursor: default;
 }
 .playlist-name {

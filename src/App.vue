@@ -25,6 +25,9 @@ export default {
     --selected-color: #FBFBFB;
     --foreground: #FBFBFB;
     --foreground-secondary: #BDBDBD;
+    -webkit-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
 }
 
 ::-webkit-scrollbar-track {
