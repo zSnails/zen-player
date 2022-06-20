@@ -63,7 +63,9 @@
         "height": 600,
         "resizable": true,
         "title": "Zen",
-        "width": 800
+        "width": 800,
+        "minHeight": 300,
+        "minWidth": 300
       }
     ]
   }
