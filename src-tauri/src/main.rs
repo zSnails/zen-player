@@ -5,6 +5,7 @@ extern crate sqlite;
 use serde::Serialize;
 use home::home_dir;
 use std::marker::Sync;
+use tauri::{Window};
 // #![cfg_attr(
 // //   all(not(debug_assertions), target_os = "windows"),
 //   windows_subsystem = "windows"
@@ -13,7 +14,7 @@ use std::marker::Sync;
 struct Database(sqlite::Connection);
 unsafe impl Sync for Database {}
 
-#[derive(Debug, Serialize, PartialEq, Eq)]
+#[derive(Debug, Serialize, PartialEq, Eq, Clone)]
 struct Playlist {
     id: i32,
     name: String,
@@ -26,7 +27,6 @@ impl Playlist {
         Playlist { id, name, description, cover }
     }
 }
-
 
 #[tauri::command]
 fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
@@ -41,12 +41,13 @@ fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
 }
 
 #[tauri::command]
-fn create_playlist(name: String, description: String, cover: String, database: tauri::State<'_, Database>){
-    println!("{}", format!("INSERT INTO playlists (name, description, cover) values ({}, {}, {})", name, description, cover));
-    match database.0.execute(format!("INSERT INTO playlists (name, description, cover) values ('{}', '{}', '{}')", name, description, cover)) {
-        Ok(_) => println!("tudo bem"),
-        Err(e) => eprintln!("não não {}", e),
-    };
+fn create_playlist(name: String, description: String, cover: String, database: tauri::State<'_, Database>, window: Window) {
+    database.0.execute(format!("INSERT INTO playlists (name, description, cover) values ('{}', '{}', '{}')", name, description, cover)).unwrap();
+
+    let mut cursor = database.0.prepare("SELECT last_insert_rowid()").unwrap().into_cursor();
+    while let Some(row) = cursor.next().unwrap() {
+        window.emit("backend:playlist-create", Playlist::new(row[0].as_integer().unwrap() as i32, name.to_owned(), description.to_owned(), cover.to_owned())).unwrap();
+    }
 }
 
 fn main() {
