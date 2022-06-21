@@ -58,6 +58,7 @@ name = "app"
 version = "0.1.0"
 dependencies = [
  "home",
+ "lofty",
  "serde",
  "serde_derive 0.9.15",
  "serde_json",
@@ -1365,6 +1366,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "lofty"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e09702a8eff21fa1cf105d189d8eea3609d7074ab1503d7c49d5b37b7403a65"
+dependencies = [
+ "base64",
+ "byteorder",
+ "cfg-if",
+ "flate2",
+ "ogg_pager",
+ "once_cell",
+ "paste",
+]
+
+[[package]]
 name = "log"
 version = "0.4.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1656,6 +1672,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c92d4ddb4bd7b50d730c215ff871754d0da6b2178849f8a2a2ab69712d0c073b"
 dependencies = [
  "objc",
+]
+
+[[package]]
+name = "ogg_pager"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2a846c4c0578b95d4568e6f48210dd6045e7a9572af2b020062d06b6dea049f4"
+dependencies = [
+ "byteorder",
 ]
 
 [[package]]

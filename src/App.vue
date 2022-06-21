@@ -6,7 +6,7 @@
         <h2 class="playlist-current"></h2>
     </section>
 </main>
-<ProgressBar max="120" progress="60"/>
+<ProgressBar max="100" progress="0"/>
 </template>
 <script>
 
@@ -121,6 +121,10 @@ body {
     outline: none;
 }
 
+.form-element>input[type="file"] {
+    /* display: none; */
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -224,6 +228,7 @@ body {
 .left-description {
     color: var(--foreground-secondary);
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }

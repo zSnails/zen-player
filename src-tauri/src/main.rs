@@ -19,11 +19,12 @@ struct Track {
     playlist_id: i32,
     name: String,
     cover: String,
+    path: String,
 }
 
 impl Track {
-    fn new(id: i32, playlist_id: i32, name: String, cover: String) -> Track {
-        Track { id, playlist_id, name, cover }
+    fn new(id: i32, playlist_id: i32, name: String, cover: String, path: String) -> Track {
+        Track { id, playlist_id, name, cover, path }
     }
 }
 
@@ -58,12 +59,11 @@ struct Theme {
 
 #[tauri::command]
 fn get_music(playlist_id: i32, database: tauri::State<'_, Database>) -> Vec<Track> {
-    //TODO: store and read track artists and whatnot
-    todo!("store and read track artists and whatnot");
+    //TODO: do some stuff with the audio metadata library I found
     let mut cursor = database.0.prepare(format!("SELECT * FROM songs WHERE playlist_id = {}", playlist_id)).unwrap().into_cursor();
     let mut tracks = Vec::with_capacity(cursor.column_count());
     while let Some(row) = cursor.next().unwrap() {
-        tracks.push(Track::new(row[0].as_integer().unwrap() as i32, row[1].as_integer().unwrap() as i32, row[2].as_string().unwrap().to_string(), row[3].as_string().unwrap().to_string()));
+        tracks.push(Track::new(row[0].as_integer().unwrap() as i32, row[1].as_integer().unwrap() as i32, row[2].as_string().unwrap().to_string(), row[3].as_string().unwrap().to_string(), row[4].as_string().unwrap().to_string()));
     }
 
     tracks
@@ -73,7 +73,6 @@ fn get_music(playlist_id: i32, database: tauri::State<'_, Database>) -> Vec<Trac
 #[tauri::command]
 fn get_playlists(database: tauri::State<'_, Database>) -> Vec<Playlist> {
     let mut cursor = database.0.prepare("SELECT * FROM playlists").unwrap().into_cursor();
-    // cursor.bind();
     let mut playlists = Vec::with_capacity(cursor.column_count());
     while let Some(row) = cursor.next().unwrap() {
         playlists.push(Playlist::new(row[0].as_integer().unwrap() as i32, row[1].as_string().unwrap().to_string(), row[2].as_string().unwrap().to_string(), row[3].as_string().unwrap().to_string()));
@@ -122,7 +121,7 @@ fn main() {
         Err(_) => eprintln!("Table already exists, ignoring")
     }
 
-    match connection.execute("CREATE TABLE songs (id INTEGER PRIMARY KEY, playlist_id INTEGER, name TEXT, cover TEXT, FOREIGN KEY (playlist_id) REFERENCES playlists(id))") {
+    match connection.execute("CREATE TABLE songs (id INTEGER PRIMARY KEY, playlist_id INTEGER, name TEXT, cover TEXT, path TEXT, FOREIGN KEY (playlist_id) REFERENCES playlists(id))") {
         Ok(_) => println!("Created songs table"),
         Err(_) => eprintln!("Songs table already exists, ignoring")
     }

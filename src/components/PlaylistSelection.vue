@@ -9,6 +9,10 @@
                 <label class="form-label normal-heading">Description</label>
                 <textarea rows="3" class="form-control" name="new-playlist-name" v-model="newPlaylistDescription" required></textarea>
             </div>
+            <div class="form-element">
+                <label class="form-label normal-heading">Cover art</label>
+                <input type="file" class="form-control" name="cover-art-location" @change="updatePlaylistCover" required/>
+            </div>
             <div class="button-row">
                 <button class="btn btn-submit" @click="submitNewPlaylist()">Done</button>
                 <button class="btn btn-cancel" @click="cancelPlaylistCreation()">Cancel</button>
@@ -38,6 +42,7 @@ export default {
         return {
             newPlaylistName: "",
             newPlaylistDescription: "",
+            newPlaylistCover: "",
             playlists: []
         }
     },
@@ -48,6 +53,10 @@ export default {
         });
     },
     methods: {
+        updatePlaylistCover(event) {
+            console.log(event);
+            this.newPlaylistCover = event.target.files[0];
+        },
         selectPlaylist(playlist) {
             store.cover = playlist.cover;
         },
@@ -55,13 +64,14 @@ export default {
             this.$refs["modal"].style.display = "none";
             this.newPlaylistDescription = "";
             this.newPlaylistName = "";
+            this.newPlaylistCover = "";
         },
         createPlaylistModal() {
             this.$refs["modal"].style.display = "block";
         },
         async submitNewPlaylist() {
             // TODO: get an actual image from the users pc
-            await invoke('create_playlist', {name: this.newPlaylistName, description: this.newPlaylistDescription, cover:"sexo"});
+            await invoke('create_playlist', {name: this.newPlaylistName, description: this.newPlaylistDescription, cover: this.newPlaylistCover});
             this.cancelPlaylistCreation();
         }
     }
